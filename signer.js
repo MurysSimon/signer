@@ -1,5 +1,3 @@
-const triggerOpen = document.querySelector('.offcanvas-trigger');
-const triggerClose = document.querySelector('.offcanvas-close');
 const saveButton = document.getElementById('saveSignature');
 const offcanvas = document.querySelector('.offcanvas');
 const canvas = document.getElementById('signatureCanvas');
@@ -9,15 +7,6 @@ const ctx = canvas.getContext('2d');
 let isDrawing = false;
 let lastX = 0;
 let lastY = 0;
-
-function toggleOffcanvas() {
-    offcanvas.classList.toggle('open');
-}
-
-function closeOffcanvas() {
-    offcanvas.classList.remove('open');
-    clearCanvas(); // Clear the canvas when offcanvas is closed
-}
 
 function startDrawing(e) {
     isDrawing = true;
@@ -50,15 +39,12 @@ function clearCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-
 function saveSignature() {
     const img = canvas.toDataURL('image/png');
     const base64Image = img.replace(/^data:image\/(png|jpeg);base64,/, "");
-    console.log(base64Image);
+    console.log(base64Image); // Log the base64 image string to the console
 }
 
-triggerOpen.addEventListener('click', toggleOffcanvas);
-triggerClose.addEventListener('click', closeOffcanvas); // Close offcanvas when trigger is clicked
 canvas.addEventListener('mousedown', startDrawing);
 canvas.addEventListener('mousemove', draw);
 canvas.addEventListener('mouseup', endDrawing);
@@ -87,37 +73,3 @@ function resizeCanvas() {
 
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas(); // Set initial size
-
-const resizeHandle = document.getElementById('resizeHandle');
-const container = canvas.parentNode; // Pro relativní pozicování úchytu
-
-let isResizing = false;
-let startX, startY, initialWidth, initialHeight;
-
-resizeHandle.addEventListener('mousedown', (e) => {
-    isResizing = true;
-    //startX = e.clientX;
-    startY = e.clientY;
-    //initialWidth = canvas.offsetWidth;
-    initialHeight = canvas.offsetHeight;
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-});
-
-function handleMouseMove(e) {
-    if (!isResizing) return;
-    //const deltaX = e.clientX - startX;
-    const deltaY = e.clientY - startY;
-    //canvas.style.width = (initialWidth + deltaX) + 'px';
-    canvas.style.height = (initialHeight + deltaY) + 'px';
-
-    // important for proper resize of canvas
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-}
-
-function handleMouseUp() {
-    isResizing = false;
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
-}
